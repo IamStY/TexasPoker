@@ -19,74 +19,135 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    LinkedList<Cards> player1 = new LinkedList();
-    LinkedList<Cards> player2 = new LinkedList();
-    LinkedList<Cards> deck = new LinkedList();
-    ArrayList<Cards> disposedCards = new ArrayList();
+    List<Cards> player1 = new LinkedList();
+    List<Cards> player2 = new LinkedList();
+    List<Cards> deck = new LinkedList();
+    List<Cards> disposedCards = new ArrayList();
     Animation scaleAnimation;
     RelativeLayout baserlay;
-    ImageView player1_1 , player2_1,player1_2,player2_2,deck1,deck2,deck3,deck4,deck5;
+    ImageView player1_1, player2_1, player1_2, player2_2, deck1, deck2, deck3, deck4, deck5;
     Random ran = new Random();
-    Button btnCall , btnRaise,btnLook;
-//    int heightPixel;
+    Button btnCall, btnRaise, btnLook , refresh;
+    //    int heightPixel;
 //    int widthPixel;
 //    float dpHeight;
     int step = 0;
-//    float dpWidth;
+
+    //    float dpWidth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        player1.clear();
+        player2.clear();
+        deck.clear();
+
         player1 = giveCardsToPlayer(2);
         player2 = giveCardsToPlayer(2);
         deck = giveCardsToPlayer(5);
 
         initView();
 
-
-        for (int i=0;i<player1.size();i++) {
-            Log.i("player 1 cards" ,"color:"+player1.get(i).getColor()+" num:"+player1.get(i).getNumber());
-        }
-        for (int i=0;i<player2.size();i++) {
-            Log.i("player 2 cards" ,"color:"+player2.get(i).getColor()+" num:"+player2.get(i).getNumber());
-        }
-        for (int i=0;i<deck.size();i++) {
-            Log.i("deck cards" ,"color:"+deck.get(i).getColor()+" num:"+deck.get(i).getNumber());
-        }
-        for (int i=0;i<disposedCards.size();i++) {
-            Log.i("disposedCards cards" ,"color:"+disposedCards.get(i).getColor()+" num:"+disposedCards.get(i).getNumber());
-        }
+//        for (int i = 0; i < player1.size(); i++) {
+//            Log.i("player 1 cards", "color:" + player1.get(i).getColor() + " num:" + player1.get(i).getNumber());
+//        }
+//        for (int i = 0; i < player2.size(); i++) {
+//            Log.i("player 2 cards", "color:" + player2.get(i).getColor() + " num:" + player2.get(i).getNumber());
+//        }
+//        for (int i = 0; i < deck.size(); i++) {
+//            Log.i("deck cards", "color:" + deck.get(i).getColor() + " num:" + deck.get(i).getNumber());
+//        }
+//        for (int i = 0; i < disposedCards.size(); i++) {
+//            Log.i("disposedCards cards", "color:" + disposedCards.get(i).getColor() + " num:" + disposedCards.get(i).getNumber());
+//        }
     }
 
     private void initView() {
-        btnCall = (Button)this.findViewById(R.id.btnCall);
-        btnLook=(Button)this.findViewById(R.id.btnLook);
-        btnLook.setOnTouchListener(new View.OnTouchListener() {
+        btnCall = (Button) this.findViewById(R.id.btnCall);
+        btnLook = (Button) this.findViewById(R.id.btnLook);
+        refresh = (Button)this.findViewById(R.id.refresh);
+        refresh.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                    showCard(player1_1,player1.get(0));
-                    showCard(player1_2,player1.get(1));
-                }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
-                    closeCard(player1_1);
-                    closeCard(player1_2);
+            public void onClick(View view) {
+             recreate();
+            }
+        });
+//        btnLook.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+//                    showCard(player1_1,player1.get(0));
+//                    showCard(player1_2,player1.get(1));
+//                }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+//                    closeCard(player1_1);
+//                    closeCard(player1_2);
+//                }
+//                return true;
+//        }});
+        btnLook.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                showCard(player1_1, player1.get(0));
+                showCard(player1_2, player1.get(1));
+                showCard(player2_1, player2.get(0));
+                showCard(player2_2, player2.get(1));
+
+//                Cards cards1 = new Cards();
+//                cards1.setColor(0);
+//                cards1.setNumber(1);
+//                Cards cards2 = new Cards();
+//                cards2.setColor(1);
+//                cards2.setNumber(1);
+//                Cards cards3 = new Cards();
+//                cards3.setColor(2);
+//                cards3.setNumber(1);
+//                Cards cards4 = new Cards();
+//                cards4.setColor(3);
+//                cards4.setNumber(1);
+//                deck.set(0,cards1);
+//                deck.set(1,cards2);
+//                deck.set(2,cards3);
+//                deck.set(3,cards4);
+
+                showCard(deck1, deck.get(0));
+                showCard(deck2, deck.get(1));
+                showCard(deck3, deck.get(2));
+                showCard(deck4, deck.get(3));
+                showCard(deck5, deck.get(4));
+
+
+                player1.addAll(deck);
+//
+//                for (Cards cards : player1) {
+//                    Log.i("算之前card" , cards.getNumber()+"");
+//                }
+                CardsResults cardsResults =CheckCardFuncUtil.checkThreeOfAKind(player1);
+                if(cardsResults.isItThisType){
+                    Log.i("最大 :",cardsResults.getHighCard()+"");
+                    Log.i("是否",cardsResults.isItThisType+"");
+//                    for(int i=0 ; i<cardsResults.getResultLeftCards().size();i++){
+//                        Log.i("同花東西" , cardsResults.getResultLeftCards().get(i).getNumber()+"");
+//                    }
+
                 }
-                return true;
-        }});
-        btnRaise = (Button)this.findViewById(R.id.btnRaise) ;
-        player1_1 = (ImageView)this.findViewById(R.id.player1_1);
-        baserlay = (RelativeLayout)this.findViewById(R.id.base_rlay);
-        player2_1 = (ImageView)this.findViewById(R.id.player2_1);
-        player1_2 = (ImageView)this.findViewById(R.id.player1_2);
-        player2_2 = (ImageView)this.findViewById(R.id.player2_2);
-        deck1 = (ImageView)this.findViewById(R.id.deck1);
-        deck2 = (ImageView)this.findViewById(R.id.deck2);
-        deck3 = (ImageView)this.findViewById(R.id.deck3);
-        deck4 = (ImageView)this.findViewById(R.id.deck4);
-        deck5 = (ImageView)this.findViewById(R.id.deck5);
+            }
+        });
+        btnRaise = (Button) this.findViewById(R.id.btnRaise);
+        player1_1 = (ImageView) this.findViewById(R.id.player1_1);
+        baserlay = (RelativeLayout) this.findViewById(R.id.base_rlay);
+        player2_1 = (ImageView) this.findViewById(R.id.player2_1);
+        player1_2 = (ImageView) this.findViewById(R.id.player1_2);
+        player2_2 = (ImageView) this.findViewById(R.id.player2_2);
+        deck1 = (ImageView) this.findViewById(R.id.deck1);
+        deck2 = (ImageView) this.findViewById(R.id.deck2);
+        deck3 = (ImageView) this.findViewById(R.id.deck3);
+        deck4 = (ImageView) this.findViewById(R.id.deck4);
+        deck5 = (ImageView) this.findViewById(R.id.deck5);
 
         startAnim();
 
@@ -95,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     private void startAnim() {
 
         // 600 and 250 and 900
-        player1_1.animate().translationX(-700).translationY(800).setDuration(1000).setListener(new Animator.AnimatorListener(){
+        player1_1.animate().translationX(-800).translationY(800).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -103,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                player2_1.animate().translationX(-700).translationY(-800).setDuration(1000).setListener(new Animator.AnimatorListener(){
+                player2_1.animate().translationX(-800).translationY(-800).setDuration(1000).setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
 
@@ -111,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        player1_2.animate().translationX(-325).translationY(800).setDuration(1000).setListener(new Animator.AnimatorListener(){
+                        player1_2.animate().translationX(-325).translationY(800).setDuration(1000).setListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animator) {
 
@@ -119,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onAnimationEnd(Animator animator) {
-                                player2_2.animate().translationX(-325).translationY(-800).setDuration(1000).setListener(new Animator.AnimatorListener(){
+                                player2_2.animate().translationX(-325).translationY(-800).setDuration(1000).setListener(new Animator.AnimatorListener() {
                                     @Override
                                     public void onAnimationStart(Animator animator) {
 
@@ -178,10 +239,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-     }
+    }
 
     private void goDeckGo() {
-        deck1.animate().translationX(-1050).setDuration(1000).setListener(new Animator.AnimatorListener(){
+        deck1.animate().translationX(-1100).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -202,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        deck2.animate().translationX(-800).setDuration(1000).setListener(new Animator.AnimatorListener(){
+        deck2.animate().translationX(-850).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -223,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        deck3.animate().translationX(-550).setDuration(1000).setListener(new Animator.AnimatorListener(){
+        deck3.animate().translationX(-600).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -244,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        deck4.animate().translationX(-300).setDuration(1000).setListener(new Animator.AnimatorListener(){
+        deck4.animate().translationX(-350).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -265,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        deck5.animate().translationX(-50).setDuration(1000).setListener(new Animator.AnimatorListener(){
+        deck5.animate().translationX(-100).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -322,6 +383,9 @@ public class MainActivity extends AppCompatActivity {
     }
     private void closeCard(ImageView view ){
         view.setImageResource(R.drawable.back);
+    }
+    private void logicCalculation(){
+
     }
     private void showCard(ImageView view,Cards card){
        int color = card.getColor();

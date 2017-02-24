@@ -6,71 +6,82 @@
     android:id="@+id/base_rlay"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-
+    android:background="@color/colorPrimaryDark"
     tools:context="com.example.stevenyang.texaspokerproject.MainActivity">
 
 
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
         app:srcCompat="@drawable/back"
         android:id="@+id/player1_1"
+
         android:layout_centerVertical="true"
+
+        android:background="@color/white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
         android:src="@drawable/back"
         android:id="@+id/player2_1"
+        android:background="@color/white"
         android:layout_alignTop="@+id/player1_1"
         android:layout_alignParentEnd="true"/>
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
         android:src="@drawable/back"
+        android:background="@color/white"
         android:id="@+id/player1_2"
         android:layout_alignTop="@+id/player1_1"
         android:layout_alignParentEnd="true"/>
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
         android:src="@drawable/back"
+        android:background="@color/white"
         android:id="@+id/player2_2"
         android:layout_alignTop="@+id/player1_1"
         android:layout_alignParentEnd="true"/>
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
         android:src="@drawable/back"
+        android:background="@color/white"
         android:id="@+id/deck1"
         android:layout_alignTop="@+id/player1_1"
         android:layout_alignParentEnd="true"/>
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
         android:src="@drawable/back"
+        android:background="@color/white"
         android:id="@+id/deck2"
         android:layout_alignTop="@+id/player1_1"
         android:layout_alignParentEnd="true"/>
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
         android:src="@drawable/back"
+        android:background="@color/white"
         android:id="@+id/deck3"
         android:layout_alignTop="@+id/player1_1"
         android:layout_alignParentEnd="true"/>
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
         android:src="@drawable/back"
+        android:background="@color/white"
         android:id="@+id/deck4"
         android:layout_alignTop="@+id/player1_1"
         android:layout_alignParentEnd="true"/>
     <ImageView
-        android:layout_width="90dp"
+        android:layout_width="60dp"
         android:layout_height="90dp"
+        android:background="@color/white"
         android:src="@drawable/back"
         android:id="@+id/deck5"
         android:layout_alignTop="@+id/player1_1"
@@ -89,8 +100,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/btnCall"
-        android:layout_alignStart="@+id/player1_1"
-        android:id="@+id/btnRaise"/>
+
+        android:id="@+id/btnRaise"
+        android:layout_alignParentEnd="true"/>
 
     <Button
         android:text="Look"
@@ -99,4 +111,12 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/btnLook"/>
+
+    <Button
+        android:text="refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/btnRaise"
+        android:id="@+id/refresh"/>
 </RelativeLayout>
