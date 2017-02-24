@@ -17,6 +17,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+        Dev {
+            minSdkVersion 21
+        }
+        Prod {
+            minSdkVersion 14
+            compileSdkVersion 24
+            buildToolsVersion "25.0.0"
+            targetSdkVersion 24
+            versionCode 1
+            versionName "1.0"
+        }
+
+    }
 }
 
 dependencies {
