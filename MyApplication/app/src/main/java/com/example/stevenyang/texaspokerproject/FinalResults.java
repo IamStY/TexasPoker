@@ -14,6 +14,9 @@ public class FinalResults {
 
     public void setResultString(CardComboType cardComboType) {
         this.resultString = cardComboType + " !!! 恭喜Player " + flag + " 獲得勝利!!!";
+        if (flag == 0) {
+            resultString  = "幹平局啦!" + cardComboType;
+        }
     }
 
     public int getFlag() {

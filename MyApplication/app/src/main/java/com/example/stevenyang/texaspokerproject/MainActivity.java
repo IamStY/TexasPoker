@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView player1_1, player2_1, player1_2, player2_2, deck1, deck2, deck3, deck4, deck5;
     Random ran = new Random();
     Button btnCall, btnRaise, btnLook , refresh;
+    int revealed = 0;
     //    int heightPixel;
 //    int widthPixel;
 //    float dpHeight;
@@ -74,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         btnCall = (Button) this.findViewById(R.id.btnCall);
         btnLook = (Button) this.findViewById(R.id.btnLook);
-        refresh = (Button)this.findViewById(R.id.refresh);
+        refresh = (Button) this.findViewById(R.id.refresh);
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             recreate();
+                recreate();
             }
         });
 //        btnLook.setOnTouchListener(new View.OnTouchListener() {
@@ -97,59 +98,28 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                showCard(player1_1, player1.get(0));
-                showCard(player1_2, player1.get(1));
-                showCard(player2_1, player2.get(0));
-                showCard(player2_2, player2.get(1));
+                if(revealed==0) {
+                    showCard(player1_1, player1.get(0));
+                    showCard(player1_2, player1.get(1));
+                    showCard(player2_1, player2.get(0));
+                    showCard(player2_2, player2.get(1));
 
-//                Cards cards1 = new Cards();
-//                cards1.setColor(0);
-//                cards1.setNumber(6);
-//                Cards cards2 = new Cards();
-//                cards2.setColor(1);
-//                cards2.setNumber(6);
-//                Cards cards3 = new Cards();
-//                cards3.setColor(2);
-//                cards3.setNumber(3);
-//                Cards cards4 = new Cards();
-//                cards4.setColor(3);
-//                cards4.setNumber(3);
-//                Cards cards5= new Cards();
-//                cards5.setColor(3);
-//                cards5.setNumber(13);
-//                deck.set(0,cards1);
-//                deck.set(1,cards2);
-//                deck.set(2,cards3);
-//                deck.set(3,cards4);
-//                deck.set(4,cards5);
-//
-                showCard(deck1, deck.get(0));
-                showCard(deck2, deck.get(1));
-                showCard(deck3, deck.get(2));
-                showCard(deck4, deck.get(3));
-                showCard(deck5, deck.get(4));
+                    showCard(deck1, deck.get(0));
+                    showCard(deck2, deck.get(1));
+                    showCard(deck3, deck.get(2));
+                    showCard(deck4, deck.get(3));
+                    showCard(deck5, deck.get(4));
 
 
-                player1.addAll(deck);
-                player2.addAll(deck);
-//
-//                for (Cards cards : player1) {
-//                    Log.i("算之前card" , cards.getNumber()+"");
-//                }
-//                CardsResults cardsResults =CheckCardFuncUtil.checkPairs(player1);
-//                if(cardsResults.isItThisType){
-//                    Log.i("最大 :",cardsResults.getLargePair()+"");
-////                    Log.i("小胚 :",cardsResults.getLowerPairCard()+"");
-////                    Log.i("高排",cardsResults.getHighCard()+"");
-//                    for(int i=0 ; i<cardsResults.getResultLeftCards().size();i++){
-//                        Log.i("比大小用的" , cardsResults.getResultLeftCards().get(i).getNumber()+"");
-//                    }
-//
-//                }
+                    player1.addAll(deck);
+                    player2.addAll(deck);
 
-        FinalResults finalResults = CheckCardFuncUtil.compair(player1,player2);
-                Log.e("finalResults",finalResults.getResultString());
-Toast.makeText(getApplicationContext(),finalResults.getResultString(),Toast.LENGTH_LONG).show();
+
+                    FinalResults finalResults = CheckCardFuncUtil.compair(player1, player2);
+                    Log.e("finalResults", finalResults.getResultString());
+                    Toast.makeText(getApplicationContext(), finalResults.getResultString(), Toast.LENGTH_LONG).show();
+                revealed = 1;
+                }
             }
         });
         btnRaise = (Button) this.findViewById(R.id.btnRaise);
@@ -166,15 +136,15 @@ Toast.makeText(getApplicationContext(),finalResults.getResultString(),Toast.LENG
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-         width = size.x;
-         height = size.y;
+        width = size.x;
+        height = size.y;
 
         player1_1.postDelayed(new Runnable() {
             @Override
             public void run() {
                 startAnim();
             }
-        },50);
+        }, 50);
 
     }
 

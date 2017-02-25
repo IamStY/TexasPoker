@@ -100,6 +100,8 @@ public class CheckCardFuncUtil {
             if (newerCardList.get(i).getNumber() + 1 == newerCardList.get(i + 1).getNumber()) {
                 maxCount++;
                 maxNumber = newerCardList.get(i).getNumber() + 1;
+            }else{
+                maxCount = 0;
             }
         }
         if (maxCount >= 5) {
@@ -261,10 +263,8 @@ public class CheckCardFuncUtil {
 
         tempCardList.addAll(newerCardList);
 
-        for (Cards cards : newerCardList) {
-            Log.i("cards list sorted", cards.getNumber() + "");
-        }
-        for (int i = 0; i < 6; i++) {
+
+        for (int i = 0; i < newerCardList.size()-1; i++) {
             if (newerCardList.get(i).getNumber() == newerCardList.get(i + 1).getNumber()) {
                 highest = newerCardList.get(i).getNumber();
                 newerCardList.remove(i);
@@ -272,7 +272,7 @@ public class CheckCardFuncUtil {
                 break;
             }
         }
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i <  newerCardList.size()-1; i++) {
             if (newerCardList.get(i).getNumber() == newerCardList.get(i + 1).getNumber()) {
                 if (newerCardList.get(i).getNumber() > highest) {
                     withPairs = highest;
@@ -284,7 +284,7 @@ public class CheckCardFuncUtil {
             }
         }
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i <  newerCardList.size()-1; i++) {
             if (newerCardList.get(i).getNumber() == newerCardList.get(i + 1).getNumber()) {
                 if (newerCardList.get(i).getNumber() > highest) {
                     withPairs = highest;
@@ -369,7 +369,7 @@ public class CheckCardFuncUtil {
 
             }else{
                 finalResults.setFlag(0);
-
+                finalResults.setResultString(player1Results.getCardComboType());
             }
             return finalResults;
 
@@ -397,7 +397,7 @@ public class CheckCardFuncUtil {
 
             }else{
                 finalResults.setFlag(0);
-
+                finalResults.setResultString(player1Results.getCardComboType());
             }
 
             return finalResults;
@@ -436,7 +436,7 @@ public class CheckCardFuncUtil {
 
                 }else{
                     finalResults.setFlag(0);
-
+                    finalResults.setResultString(player1Results.getCardComboType());
                 }
 
 
@@ -478,6 +478,7 @@ public class CheckCardFuncUtil {
                 }
             }
             finalResults.setFlag(0);
+            finalResults.setResultString(player1Results.getCardComboType());
             return finalResults;
 
         }else if(player1Results.isItThisType){
@@ -508,7 +509,7 @@ public class CheckCardFuncUtil {
 
             }else{
                 finalResults.setFlag(0);
-
+                finalResults.setResultString(player1Results.getCardComboType());
             }
 
             return finalResults;
@@ -535,7 +536,7 @@ public class CheckCardFuncUtil {
             sorted2.addAll(player2Results.getResultLeftCards());
             Collections.sort(sorted1);
             Collections.sort(sorted2);
-            for (int i = sorted1.size() - 1; i >= 0; i--) {
+            for (int i = sorted1.size() - 1; i >= 2; i--) {
                 if(sorted1.get(i).getNumber()>sorted2.get(i).getNumber()){
                     finalResults.setFlag(1);
                     finalResults.setResultString(player1Results.getCardComboType());
@@ -547,6 +548,7 @@ public class CheckCardFuncUtil {
                 }
             }
             finalResults.setFlag(0);
+            finalResults.setResultString(player1Results.getCardComboType());
             return finalResults;
 
         }else if(player1Results.isItThisType){
@@ -594,7 +596,7 @@ public class CheckCardFuncUtil {
 
                     }else{
                         finalResults.setFlag(0);
-
+                        finalResults.setResultString(player1Results.getCardComboType());
                     }
 
                 }
@@ -617,20 +619,29 @@ public class CheckCardFuncUtil {
         //checkPair
         player1Results = checkPairs(player1Cards);
         player2Results = checkPairs(player2Cards);
-        if(player1Results.isItThisType&&player2Results.isItThisType){
+        if (player1Results.isItThisType && player2Results.isItThisType) {
+            if (player1Results.getLargePair() > player2Results.getLargePair()) {
+                finalResults.setFlag(1);
+                finalResults.setResultString(player1Results.getCardComboType());
+            } else if (player1Results.getLargePair() < player2Results.getLargePair()) {
+                finalResults.setFlag(2);
+                finalResults.setResultString(player2Results.getCardComboType());
+            } else {
 
-            for (int i = player1Results.getResultLeftCards().size() - 1; i >= 0; i--) {
-                if(player1Results.getResultLeftCards().get(i).getNumber()>player2Results.getResultLeftCards().get(i).getNumber()){
-                    finalResults.setFlag(1);
-                    finalResults.setResultString(player1Results.getCardComboType());
-                    return finalResults;
-                }else if(player1Results.getResultLeftCards().get(i).getNumber()<player2Results.getResultLeftCards().get(i).getNumber()){
-                    finalResults.setFlag(2);
-                    finalResults.setResultString(player2Results.getCardComboType());
-                    return finalResults;
+                for (int i = player1Results.getResultLeftCards().size() - 1; i >=2  ; i--) {
+                    if (player1Results.getResultLeftCards().get(i).getNumber() > player2Results.getResultLeftCards().get(i).getNumber()) {
+                        finalResults.setFlag(1);
+                        finalResults.setResultString(player1Results.getCardComboType());
+                        return finalResults;
+                    } else if (player1Results.getResultLeftCards().get(i).getNumber() < player2Results.getResultLeftCards().get(i).getNumber()) {
+                        finalResults.setFlag(2);
+                        finalResults.setResultString(player2Results.getCardComboType());
+                        return finalResults;
+                    }
                 }
+                finalResults.setFlag(0);
+                finalResults.setResultString(player1Results.getCardComboType());
             }
-            finalResults.setFlag(0);
             return finalResults;
 
         }else if(player1Results.isItThisType){
@@ -646,16 +657,24 @@ public class CheckCardFuncUtil {
         }
 
         //finally
-        for (int i = player1Cards.size() - 1; i >= 0; i--) {
-            if(player1Cards.get(i).getNumber()>player2Cards.get(i).getNumber()){
+        List<Cards> sorted1 = new ArrayList<Cards>();
+        List<Cards> sorted2 = new ArrayList<Cards>();
+        sorted1.addAll(player1Cards);
+        sorted2.addAll(player2Cards);
+        Collections.sort(sorted1);
+        Collections.sort(sorted2);
+
+        for (int i = sorted1.size() - 1; i >= 2; i--) {
+            if(sorted1.get(i).getNumber()>sorted2.get(i).getNumber()){
                 finalResults.setFlag(1);
                 finalResults.setResultString(CardComboType.HIGH);
-            }else if (player1Cards.get(i).getNumber()<player2Cards.get(i).getNumber()){
+            }else if (sorted1.get(i).getNumber()<sorted2.get(i).getNumber()){
                 finalResults.setFlag(2);
                 finalResults.setResultString(CardComboType.HIGH);
             }
         }
         finalResults.setFlag(0);
+        finalResults.setResultString(CardComboType.HIGH);
         return finalResults;
 
     }
