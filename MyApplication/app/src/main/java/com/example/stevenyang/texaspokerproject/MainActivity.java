@@ -99,6 +99,43 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(revealed==0) {
+                    //debug field
+//                Cards cards1 = new Cards();
+//                cards1.setColor(0);
+//                cards1.setNumber(6);
+//                Cards cards2 = new Cards();
+//                cards2.setColor(2);
+//                cards2.setNumber(4);
+//               Cards cards3 = new Cards();
+//                cards3.setColor(0);
+//
+//                cards3.setNumber(9);
+//                Cards cards4 = new Cards();
+//                cards4.setColor(1);
+//
+//                cards4.setNumber(8);
+//                Cards cards5= new Cards();
+//                cards5.setColor(0);
+//                cards5.setNumber(7);
+//                deck.set(0,cards1);
+//                deck.set(1,cards2);
+//                deck.set(2,cards3);
+//                deck.set(3,cards4);
+//                 deck.set(4,cards5);
+//                    Cards cards6= new Cards();
+//                    cards6.setColor(1);
+//                    cards6.setNumber(7);
+//
+//                    Cards cards7= new Cards();
+//                    cards7.setColor(1);
+//                    cards7.setNumber(10);
+//                    player1.set(0,cards6);
+//                            player1.set(1,cards7);
+                    //debug field
+
+
+
+
                     showCard(player1_1, player1.get(0));
                     showCard(player1_2, player1.get(1));
                     showCard(player2_1, player2.get(0));
@@ -419,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
                     view.setImageResource(R.drawable.clubs_eight);
                     break;
                 case 9:
-                    view.setImageResource(R.drawable.clubs_ten);
+                    view.setImageResource(R.drawable.clubs_nine);
                     break;
                 case 10:
                     view.setImageResource(R.drawable.clubs_ten);
@@ -519,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
                     view.setImageResource(R.drawable.queen_of_hearts);
                     break;
                 case 13:
-                    view.setImageResource(R.drawable.king_of_clubs);
+                    view.setImageResource(R.drawable.king_of_hearts);
                     break;
 
 

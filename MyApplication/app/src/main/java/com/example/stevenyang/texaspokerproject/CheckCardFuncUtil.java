@@ -48,22 +48,21 @@ public class CheckCardFuncUtil {
         for (int j = 0; j < 4; j++) {
             int count = 0;
             tempYesList.clear();
-            int tempHigh = 0;
+
             for (int i = 0; i < newerCardList.size(); i++) {
 
 
                 if (newerCardList.get(i).getColor() == j) {
                     count++;
                     tempYesList.add(newerCardList.get(i));
-                    if (newerCardList.get(i).getNumber() > tempHigh)
-                        tempHigh = newerCardList.get(i).getNumber();
+
 
                 }
 
             }
             if (count >= 5) {
                 cardsResults.setItThisType(true);
-                cardsResults.setHighCard(tempHigh);
+
                 cardsResults.setResultLeftCards(tempYesList);
                 cardsResults.setCardComboType(CardComboType.SAME_COLOR);
 //                for (int t=0 ; t<tempYesList.size();t++){
@@ -92,8 +91,10 @@ public class CheckCardFuncUtil {
             }
 
         }
+
         newerCardList.addAll(myCards);
         Collections.sort(newerCardList);
+
         int maxCount = 0;
         int maxNumber = 0;
         for (int i = 0; i < newerCardList.size() - 1; i++) {
@@ -101,10 +102,15 @@ public class CheckCardFuncUtil {
                 maxCount++;
                 maxNumber = newerCardList.get(i).getNumber() + 1;
             }else{
-                maxCount = 0;
+                if(newerCardList.get(i).getNumber()==newerCardList.get(i+1).getNumber()){
+
+                }else{
+                    maxCount = 0;
+                }
             }
+
         }
-        if (maxCount >= 5) {
+        if (maxCount >= 4) {
             cardsResults.setHighCard(maxNumber);
             cardsResults.setItThisType(true);
             cardsResults.setCardComboType(CardComboType.FLUSH);
@@ -161,7 +167,7 @@ public class CheckCardFuncUtil {
         }
         newerCardList.addAll(myCards);
         Collections.sort(newerCardList);
-
+        Log.e("checkTwoPair start","---");
         for (int i = 0; i < 5; i++) {
             if (newerCardList.get(i).getNumber() == newerCardList.get(i + 1).getNumber() && newerCardList.get(i).getNumber() == newerCardList.get(i + 2).getNumber()) {
                 int highest;
@@ -258,11 +264,16 @@ public class CheckCardFuncUtil {
                 myCards.get(check1).setNumber(14);
             }
         }
+
         newerCardList.addAll(myCards);
         Collections.sort(newerCardList);
 
         tempCardList.addAll(newerCardList);
+        Log.e("checkTwoPair start","---");
 
+        for (int i = 0; i < myCards.size(); i++) {
+            Log.e("checkTwoPair start",myCards.get(i).getNumber()+"");
+        }
 
         for (int i = 0; i < newerCardList.size()-1; i++) {
             if (newerCardList.get(i).getNumber() == newerCardList.get(i + 1).getNumber()) {
@@ -271,6 +282,9 @@ public class CheckCardFuncUtil {
                 newerCardList.remove(i);
                 break;
             }
+        }
+        for (int i = 0; i < myCards.size(); i++) {
+            Log.e("checkTwoPair firstKill",myCards.get(i).getNumber()+"");
         }
         for (int i = 0; i <  newerCardList.size()-1; i++) {
             if (newerCardList.get(i).getNumber() == newerCardList.get(i + 1).getNumber()) {
@@ -283,7 +297,9 @@ public class CheckCardFuncUtil {
                 break;
             }
         }
-
+        for (int i = 0; i < myCards.size(); i++) {
+            Log.e("checkTwoPair secondKill",myCards.get(i).getNumber()+"");
+        }
         for (int i = 0; i <  newerCardList.size()-1; i++) {
             if (newerCardList.get(i).getNumber() == newerCardList.get(i + 1).getNumber()) {
                 if (newerCardList.get(i).getNumber() > highest) {
@@ -296,6 +312,9 @@ public class CheckCardFuncUtil {
                 newerCardList.remove(i);
                 break;
             }
+        }
+        for (int i = 0; i < myCards.size(); i++) {
+            Log.e("checkTwoPair thirdKill",myCards.get(i).getNumber()+"");
         }
         for (int i = 0; i < tempCardList.size(); i++) {
             if (tempCardList.get(i).getNumber() != highest && tempCardList.get(i).getNumber() != withPairs) {
@@ -657,8 +676,19 @@ public class CheckCardFuncUtil {
         }
 
         //finally
+
         List<Cards> sorted1 = new ArrayList<Cards>();
         List<Cards> sorted2 = new ArrayList<Cards>();
+        for (int check1 = 0; check1 < player1Cards.size(); check1++) {
+            if (player1Cards.get(check1).getNumber() == 1) {
+                player1Cards.get(check1).setNumber(14);
+            }
+        }
+        for (int check1 = 0; check1 < player2Cards.size(); check1++) {
+            if (player2Cards.get(check1).getNumber() == 1) {
+                player2Cards.get(check1).setNumber(14);
+            }
+        }
         sorted1.addAll(player1Cards);
         sorted2.addAll(player2Cards);
         Collections.sort(sorted1);
