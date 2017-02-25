@@ -1,11 +1,13 @@
 package com.example.stevenyang.texaspokerproject;
 
 import android.animation.Animator;
+import android.graphics.Point;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,6 +18,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     int step = 0;
 
     //    float dpWidth;
+    int width;
+    int height;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,21 +104,25 @@ public class MainActivity extends AppCompatActivity {
 
 //                Cards cards1 = new Cards();
 //                cards1.setColor(0);
-//                cards1.setNumber(1);
+//                cards1.setNumber(6);
 //                Cards cards2 = new Cards();
 //                cards2.setColor(1);
-//                cards2.setNumber(1);
+//                cards2.setNumber(6);
 //                Cards cards3 = new Cards();
 //                cards3.setColor(2);
-//                cards3.setNumber(1);
+//                cards3.setNumber(3);
 //                Cards cards4 = new Cards();
 //                cards4.setColor(3);
-//                cards4.setNumber(1);
+//                cards4.setNumber(3);
+//                Cards cards5= new Cards();
+//                cards5.setColor(3);
+//                cards5.setNumber(13);
 //                deck.set(0,cards1);
 //                deck.set(1,cards2);
 //                deck.set(2,cards3);
 //                deck.set(3,cards4);
-
+//                deck.set(4,cards5);
+//
                 showCard(deck1, deck.get(0));
                 showCard(deck2, deck.get(1));
                 showCard(deck3, deck.get(2));
@@ -122,19 +131,25 @@ public class MainActivity extends AppCompatActivity {
 
 
                 player1.addAll(deck);
+                player2.addAll(deck);
 //
 //                for (Cards cards : player1) {
 //                    Log.i("算之前card" , cards.getNumber()+"");
 //                }
-                CardsResults cardsResults =CheckCardFuncUtil.checkThreeOfAKind(player1);
-                if(cardsResults.isItThisType){
-                    Log.i("最大 :",cardsResults.getHighCard()+"");
-                    Log.i("是否",cardsResults.isItThisType+"");
+//                CardsResults cardsResults =CheckCardFuncUtil.checkPairs(player1);
+//                if(cardsResults.isItThisType){
+//                    Log.i("最大 :",cardsResults.getLargePair()+"");
+////                    Log.i("小胚 :",cardsResults.getLowerPairCard()+"");
+////                    Log.i("高排",cardsResults.getHighCard()+"");
 //                    for(int i=0 ; i<cardsResults.getResultLeftCards().size();i++){
-//                        Log.i("同花東西" , cardsResults.getResultLeftCards().get(i).getNumber()+"");
+//                        Log.i("比大小用的" , cardsResults.getResultLeftCards().get(i).getNumber()+"");
 //                    }
+//
+//                }
 
-                }
+        FinalResults finalResults = CheckCardFuncUtil.compair(player1,player2);
+                Log.e("finalResults",finalResults.getResultString());
+Toast.makeText(getApplicationContext(),finalResults.getResultString(),Toast.LENGTH_LONG).show();
             }
         });
         btnRaise = (Button) this.findViewById(R.id.btnRaise);
@@ -148,15 +163,31 @@ public class MainActivity extends AppCompatActivity {
         deck3 = (ImageView) this.findViewById(R.id.deck3);
         deck4 = (ImageView) this.findViewById(R.id.deck4);
         deck5 = (ImageView) this.findViewById(R.id.deck5);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+         width = size.x;
+         height = size.y;
 
-        startAnim();
+        player1_1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startAnim();
+            }
+        },50);
 
     }
 
     private void startAnim() {
 
+        Log.i("screenHeight",height+"");
+        Log.i("screenWidth",width+"");
+        Log.i("view bottom top diff",(deck1.getBottom()-deck1.getTop()+""));
+//        Log.i("he",(deck1.getBottom()-deck1.getTop()+""));
+        final int firstLeft = -width*2/3+(deck1.getRight()-deck1.getLeft());
+        final int heightPosition = height/2-(deck1.getBottom()-deck1.getTop())-120;
         // 600 and 250 and 900
-        player1_1.animate().translationX(-800).translationY(800).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        player1_1.animate().translationX(-width*2/3).translationY(heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -164,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                player2_1.animate().translationX(-800).translationY(-800).setDuration(1000).setListener(new Animator.AnimatorListener() {
+                player2_1.animate().translationX(-width*2/3).translationY(-heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
 
@@ -172,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        player1_2.animate().translationX(-325).translationY(800).setDuration(1000).setListener(new Animator.AnimatorListener() {
+                        player1_2.animate().translationX(-width/3+(deck1.getRight()-deck1.getLeft())).translationY(heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animator) {
 
@@ -180,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onAnimationEnd(Animator animator) {
-                                player2_2.animate().translationX(-325).translationY(-800).setDuration(1000).setListener(new Animator.AnimatorListener() {
+                                player2_2.animate().translationX(-width/3+(deck1.getRight()-deck1.getLeft())).translationY(-heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
                                     @Override
                                     public void onAnimationStart(Animator animator) {
 
@@ -242,7 +273,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goDeckGo() {
-        deck1.animate().translationX(-1100).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        Log.i("firs deck pos",(-width*5/6+(deck1.getRight()-deck1.getLeft()))+"");
+        deck1.animate().translationX(-width*9/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -263,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        deck2.animate().translationX(-850).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        deck2.animate().translationX(-width*7/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -284,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        deck3.animate().translationX(-600).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        deck3.animate().translationX(-width*5/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -305,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        deck4.animate().translationX(-350).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        deck4.animate().translationX(-width*3/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -326,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        deck5.animate().translationX(-100).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        deck5.animate().translationX(-width*1/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 

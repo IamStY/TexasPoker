@@ -10,6 +10,25 @@ public class CardsResults {
     List<Cards> resultLeftCards;
     boolean isItThisType ;
     int highCard;
+    int lowerPairCard; // for two pair or full house
+    int largePair;// for two pair
+    CardComboType cardComboType;
+
+    public CardComboType getCardComboType() {
+        return cardComboType;
+    }
+
+    public void setCardComboType(CardComboType cardComboType) {
+        this.cardComboType = cardComboType;
+    }
+
+    public int getLargePair() {
+        return largePair;
+    }
+
+    public void setLargePair(int largePair) {
+        this.largePair = largePair;
+    }
 
     public List<Cards> getResultLeftCards() {
         return resultLeftCards;
@@ -33,5 +52,13 @@ public class CardsResults {
 
     public void setHighCard(int highCard) {
         this.highCard = highCard;
+    }
+
+    public int getLowerPairCard() {
+        return lowerPairCard;
+    }
+
+    public void setLowerPairCard(int lowerPairCard) {
+        this.lowerPairCard = lowerPairCard;
     }
 }
