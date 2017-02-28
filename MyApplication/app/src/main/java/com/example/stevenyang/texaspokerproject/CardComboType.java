@@ -13,7 +13,7 @@ public enum CardComboType {
     THREE_OF_SAME,
     TWO_PAIRS,
     PAIR,
-    HIGH;
+    HIGH
 
 
 }

@@ -18,6 +18,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -25,17 +27,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     List<Cards> player1 = new LinkedList();
     List<Cards> player2 = new LinkedList();
     List<Cards> deck = new LinkedList();
     List<Cards> disposedCards = new ArrayList();
     Animation scaleAnimation;
-    RelativeLayout baserlay;
+    RelativeLayout baserlay  ,rlay_player_2_win,rlay_player_1_win;
     ImageView player1_1, player2_1, player1_2, player2_2, deck1, deck2, deck3, deck4, deck5;
     Random ran = new Random();
-    Button btnCall, btnRaise, btnLook , refresh;
+    Button btnCall, btnRaise, btnLook , refresh , draw;
+    TextView txt_player_1_win,txt_player_2_win;
     int revealed = 0;
+    SeekBar moneyBar ;
+    int player1Money = 3000;
+    int player2Money = 3000;
+    int unit = 100;
+    int player1Bet = 0;
     //    int heightPixel;
 //    int widthPixel;
 //    float dpHeight;
@@ -74,91 +82,50 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         btnCall = (Button) this.findViewById(R.id.btnCall);
+
         btnLook = (Button) this.findViewById(R.id.btnLook);
         refresh = (Button) this.findViewById(R.id.refresh);
+        moneyBar = (SeekBar)this.findViewById(R.id.moneyBar);
+        moneyBar.setProgress(0);
+        moneyBar.setMax(player1Money/unit);
+        moneyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                btnCall.setText("下注 : "+progress*unit);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        btnRaise = (Button) this.findViewById(R.id.btnRaise);
+        btnRaise.setOnClickListener(this);
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 recreate();
             }
         });
-//        btnLook.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-//                    showCard(player1_1,player1.get(0));
-//                    showCard(player1_2,player1.get(1));
-//                }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
-//                    closeCard(player1_1);
-//                    closeCard(player1_2);
-//                }
-//                return true;
-//        }});
-        btnLook.setOnClickListener(new View.OnClickListener() {
-
+        draw = (Button)this.findViewById(R.id.btn_draw);
+        rlay_player_1_win  =(RelativeLayout)this.findViewById(R.id.rlay_player_1_win);
+        rlay_player_2_win = (RelativeLayout)this.findViewById(R.id.rlay_player_2_win);
+        txt_player_1_win = (TextView)this.findViewById(R.id.txt_player_1_win);
+        txt_player_2_win = (TextView)this.findViewById(R.id.txt_player_2_win);
+        draw.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if(revealed==0) {
-                    //debug field
-//                Cards cards1 = new Cards();
-//                cards1.setColor(0);
-//                cards1.setNumber(6);
-//                Cards cards2 = new Cards();
-//                cards2.setColor(2);
-//                cards2.setNumber(4);
-//               Cards cards3 = new Cards();
-//                cards3.setColor(0);
-//
-//                cards3.setNumber(9);
-//                Cards cards4 = new Cards();
-//                cards4.setColor(1);
-//
-//                cards4.setNumber(8);
-//                Cards cards5= new Cards();
-//                cards5.setColor(0);
-//                cards5.setNumber(7);
-//                deck.set(0,cards1);
-//                deck.set(1,cards2);
-//                deck.set(2,cards3);
-//                deck.set(3,cards4);
-//                 deck.set(4,cards5);
-//                    Cards cards6= new Cards();
-//                    cards6.setColor(1);
-//                    cards6.setNumber(7);
-//
-//                    Cards cards7= new Cards();
-//                    cards7.setColor(1);
-//                    cards7.setNumber(10);
-//                    player1.set(0,cards6);
-//                            player1.set(1,cards7);
-                    //debug field
-
-
-
-
-                    showCard(player1_1, player1.get(0));
-                    showCard(player1_2, player1.get(1));
-                    showCard(player2_1, player2.get(0));
-                    showCard(player2_2, player2.get(1));
-
-                    showCard(deck1, deck.get(0));
-                    showCard(deck2, deck.get(1));
-                    showCard(deck3, deck.get(2));
-                    showCard(deck4, deck.get(3));
-                    showCard(deck5, deck.get(4));
-
-
-                    player1.addAll(deck);
-                    player2.addAll(deck);
-
-
-                    FinalResults finalResults = CheckCardFuncUtil.compair(player1, player2);
-                    Log.e("finalResults", finalResults.getResultString());
-                    Toast.makeText(getApplicationContext(), finalResults.getResultString(), Toast.LENGTH_LONG).show();
-                revealed = 1;
-                }
+            public void onClick(View v) {
+                draw.setVisibility(View.INVISIBLE);
+                drawCards();
             }
         });
+
+
         btnRaise = (Button) this.findViewById(R.id.btnRaise);
         player1_1 = (ImageView) this.findViewById(R.id.player1_1);
         baserlay = (RelativeLayout) this.findViewById(R.id.base_rlay);
@@ -176,13 +143,12 @@ public class MainActivity extends AppCompatActivity {
         width = size.x;
         height = size.y;
 
-        player1_1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startAnim();
-            }
-        }, 50);
 
+
+    }
+
+    private void drawCards() {
+        startAnim();
     }
 
     private void startAnim() {
@@ -373,7 +339,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
+                btnCall.setOnClickListener(MainActivity.this);
+                btnLook.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                            showCard(player1_1,player1.get(0));
+                            showCard(player1_2,player1.get(1));
+                        }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                            closeCard(player1_1);
+                            closeCard(player1_2);
+                        }
+                        return true;
+                    }});
 
+                btnLook.setOnClickListener(MainActivity.this);
             }
 
             @Override
@@ -608,5 +588,125 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        if(v == btnRaise) {
+            if(moneyBar.getVisibility()==View.VISIBLE){
+                moneyBar.setVisibility(View.INVISIBLE);
+            }else{
+                moneyBar.setVisibility(View.VISIBLE);
+            }
+        }else if(v==btnCall){
+
+            switch(step){
+                case 0 :
+                    showCard(deck1, deck.get(0));
+                    showCard(deck2, deck.get(1));
+                    showCard(deck3, deck.get(2));
+
+                    moneyBarViewUpdate();
+                    step++;
+                    break;
+                case 1:
+                    showCard(deck4, deck.get(3));
+                    moneyBarViewUpdate();
+                    step++;
+                    break;
+                case 2:
+                    showCard(deck5, deck.get(4));
+                    moneyBarViewUpdate();
+                    step++;
+                    break;
+                case 3:
+                    btnLook.setOnTouchListener(null);
+                    showCard(player2_1,player2.get(0));
+                    showCard(player2_2,player2.get(1));
+                    showCard(player1_1,player1.get(0));
+                    showCard(player1_2,player1.get(1));
+                    player1.addAll(deck);
+                    player2.addAll(deck);
+
+
+                    FinalResults finalResults = CheckCardFuncUtil.compair(player1, player2);
+                    Log.e("finalResults", finalResults.getResultString());
+//                            Toast.makeText(getApplicationContext(), finalResults.getResultString(), Toast.LENGTH_LONG).show();
+                    StringBuilder strb = new StringBuilder();
+                    strb.append(txt_player_1_win.getText()+"\n");
+
+                    strb.append(finalResults.getResultString());
+
+                    if(finalResults.getFlag()==1){
+                        rlay_player_1_win.setVisibility(View.VISIBLE);
+                        txt_player_1_win.setText(strb.toString());
+                    }else{
+                        rlay_player_2_win.setVisibility(View.VISIBLE);
+                        txt_player_2_win.setText(strb.toString());
+                    }
+                    moneyBarViewUpdate();
+                    step++;
+                    break;
+            }
+
+            //debug field
+//                Cards cards1 = new Cards();
+//                cards1.setColor(0);
+//                cards1.setNumber(6);
+//                Cards cards2 = new Cards();
+//                cards2.setColor(2);
+//                cards2.setNumber(4);
+//               Cards cards3 = new Cards();
+//                cards3.setColor(0);
+//
+//                cards3.setNumber(9);
+//                Cards cards4 = new Cards();
+//                cards4.setColor(1);
+//
+//                cards4.setNumber(8);
+//                Cards cards5= new Cards();
+//                cards5.setColor(0);
+//                cards5.setNumber(7);
+//                deck.set(0,cards1);
+//                deck.set(1,cards2);
+//                deck.set(2,cards3);
+//                deck.set(3,cards4);
+//                 deck.set(4,cards5);
+//                    Cards cards6= new Cards();
+//                    cards6.setColor(1);
+//                    cards6.setNumber(7);
+//
+//                    Cards cards7= new Cards();
+//                    cards7.setColor(1);
+//                    cards7.setNumber(10);
+//                    player1.set(0,cards6);
+//                            player1.set(1,cards7);
+            //debug field
+
+
+
+//
+//                showCard(player1_1, player1.get(0));
+//                showCard(player1_2, player1.get(1));
+//                showCard(player2_1, player2.get(0));
+//                showCard(player2_2, player2.get(1));
+
+
+
+
+
+
+        }
+//        else if(v==btnLook){
+//
+//
+//
+//        }
+    }
+
+    private void moneyBarViewUpdate() {
+        player1Bet= moneyBar.getProgress()*unit;
+        moneyBar.setProgress(0);
+        player1Money-=player1Bet;
+        moneyBar.setMax((player1Money)/unit);
+    }
 }
 
