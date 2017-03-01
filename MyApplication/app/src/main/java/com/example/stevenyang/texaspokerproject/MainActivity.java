@@ -2,19 +2,13 @@ package com.example.stevenyang.texaspokerproject;
 
 import android.animation.Animator;
 import android.graphics.Point;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -32,18 +26,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     List<Cards> player2 = new LinkedList();
     List<Cards> deck = new LinkedList();
     List<Cards> disposedCards = new ArrayList();
-    Animation scaleAnimation;
-    RelativeLayout baserlay  ,rlay_player_2_win,rlay_player_1_win;
+   RelativeLayout baserlay  ,rlay_player_2_win,rlay_player_1_win;
     ImageView player1_1, player2_1, player1_2, player2_2, deck1, deck2, deck3, deck4, deck5;
     Random ran = new Random();
     Button btnCall, btnRaise, btnLook , refresh , draw;
-    TextView txt_player_1_win,txt_player_2_win;
-    int revealed = 0;
+    TextView txt_player_1_win,txt_player_2_win , remainingCash1 , remainingCash2;
     SeekBar moneyBar ;
     int player1Money = 3000;
     int player2Money = 3000;
     int unit = 100;
     int player1Bet = 0;
+    int player1TotalInPool;
+    int player2Bet = 0;
+    int player2TotalInPool;
+    int tableBet = 0;
+   boolean reraiseDirectlyNextStep = false;
+
     //    int heightPixel;
 //    int widthPixel;
 //    float dpHeight;
@@ -81,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initView() {
+        remainingCash1 = (TextView)this.findViewById(R.id.txt_remaining_cash1);
+        remainingCash2 = (TextView)this.findViewById(R.id.txt_remaining_cash2);
         btnCall = (Button) this.findViewById(R.id.btnCall);
 
         btnLook = (Button) this.findViewById(R.id.btnLook);
@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startAnim() {
+        player1.addAll(deck);
+        player2.addAll(deck);
 
         Log.i("screenHeight",height+"");
         Log.i("screenWidth",width+"");
@@ -600,50 +602,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             switch(step){
                 case 0 :
-                    showCard(deck1, deck.get(0));
-                    showCard(deck2, deck.get(1));
-                    showCard(deck3, deck.get(2));
+                   if(betMovementEnhancement()==true) {
 
-                    moneyBarViewUpdate();
-                    step++;
+                       initBet();
+                        step++;
+                        showCardTotalFunction(step);
+
+                    }
+                    setRemaingCash();
+
                     break;
                 case 1:
-                    showCard(deck4, deck.get(3));
-                    moneyBarViewUpdate();
-                    step++;
+//                    showCard(deck4, deck.get(3));
+                    if(betMovementEnhancement()==true) {
+                        initBet();
+                        step++;
+                        showCardTotalFunction(step);
+                    }
+                    setRemaingCash();
+
                     break;
                 case 2:
-                    showCard(deck5, deck.get(4));
-                    moneyBarViewUpdate();
-                    step++;
+//                    showCard(deck5, deck.get(4));
+                    if(betMovementEnhancement()==true) {
+                        initBet();
+                        step++;
+                        showCardTotalFunction(step);
+                    }
+                    setRemaingCash();
+
                     break;
                 case 3:
-                    btnLook.setOnTouchListener(null);
-                    showCard(player2_1,player2.get(0));
-                    showCard(player2_2,player2.get(1));
-                    showCard(player1_1,player1.get(0));
-                    showCard(player1_2,player1.get(1));
-                    player1.addAll(deck);
-                    player2.addAll(deck);
 
-
-                    FinalResults finalResults = CheckCardFuncUtil.compair(player1, player2);
-                    Log.e("finalResults", finalResults.getResultString());
+                    if(betMovementEnhancement()==true) {
+                        initBet();
+                        step++;
+                        showCardTotalFunction(step);
+                        FinalResults finalResults = CheckCardFuncUtil.compair(player1, player2);
+                        Log.e("finalResults", finalResults.getResultString());
 //                            Toast.makeText(getApplicationContext(), finalResults.getResultString(), Toast.LENGTH_LONG).show();
-                    StringBuilder strb = new StringBuilder();
-                    strb.append(txt_player_1_win.getText()+"\n");
+                        StringBuilder strb = new StringBuilder();
+                        strb.append(txt_player_1_win.getText() + "\n");
 
-                    strb.append(finalResults.getResultString());
+                        strb.append(finalResults.getResultString());
 
-                    if(finalResults.getFlag()==1){
-                        rlay_player_1_win.setVisibility(View.VISIBLE);
-                        txt_player_1_win.setText(strb.toString());
-                    }else{
-                        rlay_player_2_win.setVisibility(View.VISIBLE);
-                        txt_player_2_win.setText(strb.toString());
+                        if (finalResults.getFlag() == 1) {
+                            rlay_player_1_win.setVisibility(View.VISIBLE);
+                            txt_player_1_win.setText(strb.toString());
+                        } else {
+                            rlay_player_2_win.setVisibility(View.VISIBLE);
+                            txt_player_2_win.setText(strb.toString());
+                        }
                     }
-                    moneyBarViewUpdate();
-                    step++;
+                    setRemaingCash();
+
                     break;
             }
 
@@ -702,11 +714,151 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
     }
 
-    private void moneyBarViewUpdate() {
-        player1Bet= moneyBar.getProgress()*unit;
-        moneyBar.setProgress(0);
-        player1Money-=player1Bet;
-        moneyBar.setMax((player1Money)/unit);
+    private void setRemaingCash(){
+        remainingCash1.setText(player1Money+"");
+        remainingCash2.setText(player2Money+"");
+    }
+    private void initBet() {
+        reraiseDirectlyNextStep = false;
+        tableBet = 0;
+        player1Bet = 0;
+        player1TotalInPool = 0;
+        player2Bet = 0;
+        player2TotalInPool = 0;
+    }
+
+    private void showCardTotalFunction(int step) {
+        switch (step) {
+            case 1:
+
+                showCard(deck1, deck.get(0));
+                showCard(deck2, deck.get(1));
+                showCard(deck3, deck.get(2));
+                break;
+            case 2:
+                showCard(deck4, deck.get(3));
+                break;
+            case 3:
+                showCard(deck5, deck.get(4));
+                break;
+            case 4:
+                btnLook.setOnTouchListener(null);
+                showCard(player2_1,player2.get(0));
+                showCard(player2_2,player2.get(1));
+                showCard(player1_1,player1.get(0));
+                showCard(player1_2,player1.get(1));
+                break;
+        }
+    }
+
+    private boolean betMovement() {
+        //取得我的下注
+        player1Bet = moneyBar.getProgress() * unit;
+
+        //如果我和他的下注一樣的話
+        if (player1Bet >= player2Bet) {
+           player1Money -= player1Bet;
+            moneyBar.setMax((player1Money) / unit);
+
+            //call到一樣的話 直接下一輪
+            if (reraiseDirectlyNextStep) {
+                return true;
+            }
+            //收到下法後 電腦下法
+
+                Random random = new Random();
+
+                int computerRandomBet = (random.nextInt(player2Money / unit)) * unit;
+                Log.e("computer random bet",computerRandomBet+"");
+
+                if (computerRandomBet-player2Bet <= 0) {
+                    player2Bet = player1Bet;
+                    player2Money -= player2Bet;
+                    Toast.makeText(getApplicationContext(), "電腦跟", Toast.LENGTH_SHORT).show();
+                    return true;
+                }else {
+                    //反raise , 先扣掉player1下的
+                    player2Money-=player1Bet;
+                    //再扣掉自己反raise的
+                    player2Bet = computerRandomBet-player1Bet;
+                    player2Money -= player2Bet;
+                }
+                reraiseDirectlyNextStep = true;
+                Toast.makeText(getApplicationContext(), "電腦re-raise " + player2Bet + "$", Toast.LENGTH_SHORT).show();
+                return false;
+            } else {
+                Log.e("player1Bet", player1Bet + "");
+                Log.e("player2Bet", player2Bet + "");
+                Toast.makeText(getApplicationContext(), "價位不對", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+
+    }
+
+    private boolean betMovementEnhancement() {
+        player1Bet = moneyBar.getProgress() * unit;
+
+        Log.e("player1Bet",player1Bet+"");
+        Log.e("player1TotalInPool",player1TotalInPool+"");
+        Log.e("tableBet",tableBet+"");
+
+        if(player1Bet+player1TotalInPool>tableBet) {
+            //取得我的下注
+
+
+            //扣掉玩家的現金
+            player1Money -= player1Bet;
+            //設置目前桌上Bet
+            tableBet = player1TotalInPool+player1Bet;
+
+            player1TotalInPool+=player1Bet;
+
+
+            Log.i("currentTableBet",tableBet+"");
+            refreshMoneyBar();
+            //電腦判斷跟還是reraise
+            Random random = new Random();
+
+            int computerRandomBet = (random.nextInt(player2Money / unit)) * unit;
+            if (computerRandomBet <= tableBet) {
+                //跟
+
+                player2Bet = tableBet;
+                player2Money =player2Money- (player2Bet-player2TotalInPool);
+
+                Log.e("跟上後電腦池中",player2Bet+"");
+                Log.e("跟上後電腦池中",player2TotalInPool+"");
+                Log.e("跟上後電腦池中",player2TotalInPool+"");
+                return true;
+            } else {
+
+                tableBet = computerRandomBet;
+                player2TotalInPool+=tableBet;
+                player2Money -= tableBet;
+                Log.e("隨機後電腦池中",player2TotalInPool+"");
+                return false;
+            }
+        }else if(player1Bet+player1TotalInPool==tableBet){
+            //取得我的下注
+
+            //設置目前桌上Bet
+            tableBet = player1Bet;
+            //扣掉玩家的現金
+            player1Money -= player1Bet;
+
+            player1TotalInPool+=player1Bet;
+
+            refreshMoneyBar();
+           return true;
+
+        }else{
+            Toast.makeText(getApplicationContext(),"數目異常",Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+    private void refreshMoneyBar(){
+        moneyBar.setMax((player1Money) / unit);
     }
 }
 
