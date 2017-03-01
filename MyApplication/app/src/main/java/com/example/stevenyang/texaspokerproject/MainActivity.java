@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initView() {
         remainingCash1 = (TextView)this.findViewById(R.id.txt_remaining_cash1);
         remainingCash2 = (TextView)this.findViewById(R.id.txt_remaining_cash2);
+        remainingCash1.setText(player1Money+"");
+        remainingCash2.setText(player2Money+"");
         btnCall = (Button) this.findViewById(R.id.btnCall);
 
         btnLook = (Button) this.findViewById(R.id.btnLook);
@@ -803,7 +805,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.e("player1TotalInPool",player1TotalInPool+"");
         Log.e("tableBet",tableBet+"");
 
-        if(player1Bet+player1TotalInPool>tableBet) {
+        if(player1Bet+player1TotalInPool>=tableBet) {
             //取得我的下注
 
 
@@ -815,31 +817,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             player1TotalInPool+=player1Bet;
 
 
-            Log.i("currentTableBet",tableBet+"");
+            Log.i("currentTableBet", tableBet + "");
             refreshMoneyBar();
             //電腦判斷跟還是reraise
             Random random = new Random();
+            if (player1Bet == 0 ||  player2TotalInPool!=player1TotalInPool) {
+                if(player2Money==0 || player1Money==0) {
+                    int computerRandomBet = (random.nextInt(player2Money / unit)) * unit;
+                    if (computerRandomBet <= tableBet) {
+                        //跟
 
-            int computerRandomBet = (random.nextInt(player2Money / unit)) * unit;
-            if (computerRandomBet <= tableBet) {
-                //跟
+                        player2Bet = tableBet;
+                        player2Money = player2Money - (player2Bet - player2TotalInPool);
 
-                player2Bet = tableBet;
-                player2Money =player2Money- (player2Bet-player2TotalInPool);
+                        Log.e("跟上後電腦池中", player2Bet + "");
+                        Log.e("跟上後電腦池中", player2TotalInPool + "");
+                        Log.e("跟上後電腦池中", player2TotalInPool + "");
+                        return true;
+                    } else {
 
-                Log.e("跟上後電腦池中",player2Bet+"");
-                Log.e("跟上後電腦池中",player2TotalInPool+"");
-                Log.e("跟上後電腦池中",player2TotalInPool+"");
+                        tableBet = computerRandomBet;
+                        player2TotalInPool += tableBet;
+                        player2Money -= tableBet;
+                        Log.e("隨機後電腦池中", player2TotalInPool + "");
+                        return false;
+                    }
+                }else{
+                    Log.e("沒錢啦","別那邊反raise");
+                    //沒錢啦!  別那邊反raise了
+                    return true;
+                }
+            }else{
+                //玩家跟上
                 return true;
-            } else {
-
-                tableBet = computerRandomBet;
-                player2TotalInPool+=tableBet;
-                player2Money -= tableBet;
-                Log.e("隨機後電腦池中",player2TotalInPool+"");
-                return false;
             }
-        }else if(player1Bet+player1TotalInPool==tableBet){
+        } else if (player1Bet + player1TotalInPool == tableBet) {
             //取得我的下注
 
             //設置目前桌上Bet
