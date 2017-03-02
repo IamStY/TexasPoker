@@ -9,6 +9,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,11 +27,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     List<Cards> player2 = new LinkedList();
     List<Cards> deck = new LinkedList();
     List<Cards> disposedCards = new ArrayList();
-    RelativeLayout baserlay, rlay_player_2_win, rlay_player_1_win;
+    RelativeLayout baserlay, rlay_player_2_win, rlay_player_1_win ,rlay_draw;
     ImageView player1_1, player2_1, player1_2, player2_2, deck1, deck2, deck3, deck4, deck5;
     Random ran = new Random();
     Button btnCall, btnRaise, btnLook, refresh, draw;
-    TextView txt_player_1_win, txt_player_2_win, remainingCash1, remainingCash2;
+    TextView txt_player_1_win, txt_player_2_win, remainingCash1, remainingCash2,txt_draw;
     SeekBar moneyBar;
     int player1Money = 3000;
     int player2Money = 3000;
@@ -85,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         remainingCash1.setText(player1Money + "");
         remainingCash2.setText(player2Money + "");
         btnCall = (Button) this.findViewById(R.id.btnCall);
+        rlay_draw = (RelativeLayout)this.findViewById(R.id.rlay_draw);
+        txt_draw = (TextView)this.findViewById(R.id.txt_draw);
 
         btnLook = (Button) this.findViewById(R.id.btnLook);
         refresh = (Button) this.findViewById(R.id.refresh);
@@ -413,9 +416,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         view.setImageResource(R.drawable.back);
     }
 
-    private void logicCalculation() {
-
-    }
 
     private void showCard(ImageView view, Cards card) {
         int color = card.getColor();
@@ -616,6 +616,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         initBet();
                         step++;
                         showCardTotalFunction(step);
+                        player1PushChipToTable();
 
                     }
                     setRemaingCash();
@@ -627,6 +628,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         initBet();
                         step++;
                         showCardTotalFunction(step);
+                        player1PushChipToTable();
                     }
                     setRemaingCash();
 
@@ -637,6 +639,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         initBet();
                         step++;
                         showCardTotalFunction(step);
+                        player1PushChipToTable();
                     }
                     setRemaingCash();
 
@@ -647,6 +650,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         initBet();
                         step++;
                         showCardTotalFunction(step);
+                        player1PushChipToTable();
                         FinalResults finalResults = CheckCardFuncUtil.compair(player1, player2);
                         Log.e("finalResults", finalResults.getResultString());
 //                            Toast.makeText(getApplicationContext(), finalResults.getResultString(), Toast.LENGTH_LONG).show();
@@ -658,9 +662,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (finalResults.getFlag() == 1) {
                             rlay_player_1_win.setVisibility(View.VISIBLE);
                             txt_player_1_win.setText(strb.toString());
-                        } else {
+                        } else if(finalResults.getFlag() == 2) {
                             rlay_player_2_win.setVisibility(View.VISIBLE);
                             txt_player_2_win.setText(strb.toString());
+                        }else{
+                            rlay_draw.setVisibility(View.VISIBLE);
+                            txt_draw.setText(strb.toString());
                         }
                     }
                     setRemaingCash();
@@ -775,7 +782,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void player2PushChipToTable(){
+        ImageView imageView = new ImageView(MainActivity.this);
+        imageView.setImageResource(R.drawable.chips);
 
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                100,
+                100);
+
+        lp.setMargins(0,0,0,50);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        lp.addRule(RelativeLayout.ABOVE,R.id.player1_1);
+//                lp.addRule(RelativeLayout.MarginLayoutParams);
+        Animation animation =  AnimationUtils.loadAnimation(this, R.anim.p2_push_chips);
+
+        baserlay.addView(imageView,lp);
+        imageView.setAnimation(animation);
+        animation.start();
+    }
+    private void player1PushChipToTable(){
+        ImageView imageView = new ImageView(MainActivity.this);
+        imageView.setImageResource(R.drawable.chips);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                100,
+                100);
+
+        lp.setMargins(0,50,0,0);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        lp.addRule(RelativeLayout.BELOW,R.id.player2_1);
+//                lp.addRule(RelativeLayout.MarginLayoutParams);
+        Animation animation =  AnimationUtils.loadAnimation(this, R.anim.p1_push_chips);
+
+        baserlay.addView(imageView,lp);
+        imageView.setAnimation(animation);
+        animation.start();
+    }
     private boolean betMovementEnhancement() {
         player1Bet = moneyBar.getProgress() * unit;
 
@@ -813,6 +855,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.e("跟上後電腦池中", player2Bet + "");
                         Log.e("跟上後電腦池中", player2TotalInPool + "");
                         Log.e("跟上後電腦池中", player2TotalInPool + "");
+                        player2PushChipToTable();
                         return true;
                     } else {
                         //電腦re-raise
@@ -854,6 +897,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         });
                         Log.e("隨機後電腦池中", player2TotalInPool + "");
+                        player2PushChipToTable();
                         return false;
                     }
                 } else {
