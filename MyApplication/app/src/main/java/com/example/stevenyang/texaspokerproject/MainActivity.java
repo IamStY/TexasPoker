@@ -26,12 +26,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     List<Cards> player2 = new LinkedList();
     List<Cards> deck = new LinkedList();
     List<Cards> disposedCards = new ArrayList();
-   RelativeLayout baserlay  ,rlay_player_2_win,rlay_player_1_win;
+    RelativeLayout baserlay, rlay_player_2_win, rlay_player_1_win;
     ImageView player1_1, player2_1, player1_2, player2_2, deck1, deck2, deck3, deck4, deck5;
     Random ran = new Random();
-    Button btnCall, btnRaise, btnLook , refresh , draw;
-    TextView txt_player_1_win,txt_player_2_win , remainingCash1 , remainingCash2;
-    SeekBar moneyBar ;
+    Button btnCall, btnRaise, btnLook, refresh, draw;
+    TextView txt_player_1_win, txt_player_2_win, remainingCash1, remainingCash2;
+    SeekBar moneyBar;
     int player1Money = 3000;
     int player2Money = 3000;
     int unit = 100;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int player2Bet = 0;
     int player2TotalInPool;
     int tableBet = 0;
-   boolean reraiseDirectlyNextStep = false;
+    boolean reraiseDirectlyNextStep = false;
 
     //    int heightPixel;
 //    int widthPixel;
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //    float dpWidth;
     int width;
     int height;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,21 +80,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initView() {
-        remainingCash1 = (TextView)this.findViewById(R.id.txt_remaining_cash1);
-        remainingCash2 = (TextView)this.findViewById(R.id.txt_remaining_cash2);
-        remainingCash1.setText(player1Money+"");
-        remainingCash2.setText(player2Money+"");
+        remainingCash1 = (TextView) this.findViewById(R.id.txt_remaining_cash1);
+        remainingCash2 = (TextView) this.findViewById(R.id.txt_remaining_cash2);
+        remainingCash1.setText(player1Money + "");
+        remainingCash2.setText(player2Money + "");
         btnCall = (Button) this.findViewById(R.id.btnCall);
 
         btnLook = (Button) this.findViewById(R.id.btnLook);
         refresh = (Button) this.findViewById(R.id.refresh);
-        moneyBar = (SeekBar)this.findViewById(R.id.moneyBar);
+        moneyBar = (SeekBar) this.findViewById(R.id.moneyBar);
         moneyBar.setProgress(0);
-        moneyBar.setMax(player1Money/unit);
+        moneyBar.setMax(player1Money / unit);
         moneyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                btnCall.setText("下注 : "+progress*unit);
+                btnCall.setText("下注 : " + progress * unit);
+//set minimum
+//                moneyBar.setProgress(15);
             }
 
             @Override
@@ -114,11 +117,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 recreate();
             }
         });
-        draw = (Button)this.findViewById(R.id.btn_draw);
-        rlay_player_1_win  =(RelativeLayout)this.findViewById(R.id.rlay_player_1_win);
-        rlay_player_2_win = (RelativeLayout)this.findViewById(R.id.rlay_player_2_win);
-        txt_player_1_win = (TextView)this.findViewById(R.id.txt_player_1_win);
-        txt_player_2_win = (TextView)this.findViewById(R.id.txt_player_2_win);
+        draw = (Button) this.findViewById(R.id.btn_draw);
+        rlay_player_1_win = (RelativeLayout) this.findViewById(R.id.rlay_player_1_win);
+        rlay_player_2_win = (RelativeLayout) this.findViewById(R.id.rlay_player_2_win);
+        txt_player_1_win = (TextView) this.findViewById(R.id.txt_player_1_win);
+        txt_player_2_win = (TextView) this.findViewById(R.id.txt_player_2_win);
         draw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         height = size.y;
 
 
-
     }
 
     private void drawCards() {
@@ -157,14 +159,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         player1.addAll(deck);
         player2.addAll(deck);
 
-        Log.i("screenHeight",height+"");
-        Log.i("screenWidth",width+"");
-        Log.i("view bottom top diff",(deck1.getBottom()-deck1.getTop()+""));
+        Log.i("screenHeight", height + "");
+        Log.i("screenWidth", width + "");
+        Log.i("view bottom top diff", (deck1.getBottom() - deck1.getTop() + ""));
 //        Log.i("he",(deck1.getBottom()-deck1.getTop()+""));
-        final int firstLeft = -width*2/3+(deck1.getRight()-deck1.getLeft());
-        final int heightPosition = height/2-(deck1.getBottom()-deck1.getTop())-120;
+        final int firstLeft = -width * 2 / 3 + (deck1.getRight() - deck1.getLeft());
+        final int heightPosition = height / 2 - (deck1.getBottom() - deck1.getTop()) - 120;
         // 600 and 250 and 900
-        player1_1.animate().translationX(-width*2/3).translationY(heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        player1_1.animate().translationX(-width * 2 / 3).translationY(heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                player2_1.animate().translationX(-width*2/3).translationY(-heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
+                player2_1.animate().translationX(-width * 2 / 3).translationY(-heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
 
@@ -180,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        player1_2.animate().translationX(-width/3+(deck1.getRight()-deck1.getLeft())).translationY(heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
+                        player1_2.animate().translationX(-width / 3 + (deck1.getRight() - deck1.getLeft())).translationY(heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animator) {
 
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             @Override
                             public void onAnimationEnd(Animator animator) {
-                                player2_2.animate().translationX(-width/3+(deck1.getRight()-deck1.getLeft())).translationY(-heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
+                                player2_2.animate().translationX(-width / 3 + (deck1.getRight() - deck1.getLeft())).translationY(-heightPosition).setDuration(1000).setListener(new Animator.AnimatorListener() {
                                     @Override
                                     public void onAnimationStart(Animator animator) {
 
@@ -250,8 +252,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void goDeckGo() {
-        Log.i("firs deck pos",(-width*5/6+(deck1.getRight()-deck1.getLeft()))+"");
-        deck1.animate().translationX(-width*9/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        Log.i("firs deck pos", (-width * 5 / 6 + (deck1.getRight() - deck1.getLeft())) + "");
+        deck1.animate().translationX(-width * 9 / 10 + (deck1.getRight() - deck1.getLeft()) / 2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -272,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        deck2.animate().translationX(-width*7/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        deck2.animate().translationX(-width * 7 / 10 + (deck1.getRight() - deck1.getLeft()) / 2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -293,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        deck3.animate().translationX(-width*5/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        deck3.animate().translationX(-width * 5 / 10 + (deck1.getRight() - deck1.getLeft()) / 2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -314,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        deck4.animate().translationX(-width*3/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        deck4.animate().translationX(-width * 3 / 10 + (deck1.getRight() - deck1.getLeft()) / 2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -335,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        deck5.animate().translationX(-width*1/10+(deck1.getRight()-deck1.getLeft())/2).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        deck5.animate().translationX(-width * 1 / 10 + (deck1.getRight() - deck1.getLeft()) / 2).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -347,15 +349,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnLook.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
-                        if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                            showCard(player1_1,player1.get(0));
-                            showCard(player1_2,player1.get(1));
-                        }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            showCard(player1_1, player1.get(0));
+                            showCard(player1_2, player1.get(1));
+                        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                             closeCard(player1_1);
                             closeCard(player1_2);
                         }
                         return true;
-                    }});
+                    }
+                });
 
                 btnLook.setOnClickListener(MainActivity.this);
             }
@@ -377,44 +380,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         LinkedList<Cards> tempCards = new LinkedList<Cards>();
 
-        while (tempCards.size()<amount){
-           Cards card = createCards();
+        while (tempCards.size() < amount) {
+            Cards card = createCards();
             boolean giveCard = true;
-            for (int i=0 ; i<disposedCards.size();i++) {
-                if(disposedCards.get(i).getColor()==card.getColor()&&disposedCards.get(i).getNumber()==card.getNumber()){
+            for (int i = 0; i < disposedCards.size(); i++) {
+                if (disposedCards.get(i).getColor() == card.getColor() && disposedCards.get(i).getNumber() == card.getNumber()) {
                     giveCard = false;
                     break;
                 }
 
             }
-            if(giveCard){
+            if (giveCard) {
                 tempCards.add(card);
                 disposedCards.add(card);
             }
 
         }
-        return    tempCards;
+        return tempCards;
 
     }
-    private Cards createCards(){
-        int randNum =ran.nextInt(13)+1;
+
+    private Cards createCards() {
+        int randNum = ran.nextInt(13) + 1;
         int randColor = ran.nextInt(3);
         Cards cards = new Cards();
         cards.setColor(randColor);
         cards.setNumber(randNum);
         return cards;
     }
-    private void closeCard(ImageView view ){
+
+    private void closeCard(ImageView view) {
         view.setImageResource(R.drawable.back);
     }
-    private void logicCalculation(){
+
+    private void logicCalculation() {
 
     }
-    private void showCard(ImageView view,Cards card){
-       int color = card.getColor();
+
+    private void showCard(ImageView view, Cards card) {
+        int color = card.getColor();
         int number = card.getNumber();
-        if(color==0){
-            switch (number){
+        if (color == 0) {
+            switch (number) {
                 case 1:
                     view.setImageResource(R.drawable.ace_of_clubs);
                     break;
@@ -457,8 +464,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             }
-        } else if(color==1){
-            switch (number){
+        } else if (color == 1) {
+            switch (number) {
                 case 1:
                     view.setImageResource(R.drawable.ace_of_diamonds);
                     break;
@@ -501,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             }
-        }else if(color==2) {
+        } else if (color == 2) {
             switch (number) {
                 case 1:
                     view.setImageResource(R.drawable.ace_of_hearts);
@@ -545,7 +552,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             }
-        }else if(color==3) {
+        } else if (color == 3) {
             switch (number) {
                 case 1:
                     view.setImageResource(R.drawable.ace_of_spades);
@@ -594,19 +601,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(v == btnRaise) {
-            if(moneyBar.getVisibility()==View.VISIBLE){
+        if (v == btnRaise) {
+            if (moneyBar.getVisibility() == View.VISIBLE) {
                 moneyBar.setVisibility(View.INVISIBLE);
-            }else{
+            } else {
                 moneyBar.setVisibility(View.VISIBLE);
             }
-        }else if(v==btnCall){
+        } else if (v == btnCall) {
 
-            switch(step){
-                case 0 :
-                   if(betMovementEnhancement()==true) {
+            switch (step) {
+                case 0:
+                    if (betMovementEnhancement() == true) {
 
-                       initBet();
+                        initBet();
                         step++;
                         showCardTotalFunction(step);
 
@@ -616,7 +623,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case 1:
 //                    showCard(deck4, deck.get(3));
-                    if(betMovementEnhancement()==true) {
+                    if (betMovementEnhancement() == true) {
                         initBet();
                         step++;
                         showCardTotalFunction(step);
@@ -626,7 +633,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case 2:
 //                    showCard(deck5, deck.get(4));
-                    if(betMovementEnhancement()==true) {
+                    if (betMovementEnhancement() == true) {
                         initBet();
                         step++;
                         showCardTotalFunction(step);
@@ -636,7 +643,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case 3:
 
-                    if(betMovementEnhancement()==true) {
+                    if (betMovementEnhancement() == true) {
                         initBet();
                         step++;
                         showCardTotalFunction(step);
@@ -696,16 +703,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //debug field
 
 
-
 //
 //                showCard(player1_1, player1.get(0));
 //                showCard(player1_2, player1.get(1));
 //                showCard(player2_1, player2.get(0));
 //                showCard(player2_2, player2.get(1));
-
-
-
-
 
 
         }
@@ -716,10 +718,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
     }
 
-    private void setRemaingCash(){
-        remainingCash1.setText(player1Money+"");
-        remainingCash2.setText(player2Money+"");
+    private void setRemaingCash() {
+        remainingCash1.setText(player1Money + "");
+        remainingCash2.setText(player2Money + "");
     }
+
     private void initBet() {
         reraiseDirectlyNextStep = false;
         tableBet = 0;
@@ -727,6 +730,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         player1TotalInPool = 0;
         player2Bet = 0;
         player2TotalInPool = 0;
+        moneyBar.setProgress(0);
+        moneyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                btnCall.setText("下注 : " + progress * unit);
+//set minimum
+//                moneyBar.setProgress(15);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void showCardTotalFunction(int step) {
@@ -745,85 +767,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case 4:
                 btnLook.setOnTouchListener(null);
-                showCard(player2_1,player2.get(0));
-                showCard(player2_2,player2.get(1));
-                showCard(player1_1,player1.get(0));
-                showCard(player1_2,player1.get(1));
+                showCard(player2_1, player2.get(0));
+                showCard(player2_2, player2.get(1));
+                showCard(player1_1, player1.get(0));
+                showCard(player1_2, player1.get(1));
                 break;
         }
     }
 
-    private boolean betMovement() {
-        //取得我的下注
-        player1Bet = moneyBar.getProgress() * unit;
-
-        //如果我和他的下注一樣的話
-        if (player1Bet >= player2Bet) {
-           player1Money -= player1Bet;
-            moneyBar.setMax((player1Money) / unit);
-
-            //call到一樣的話 直接下一輪
-            if (reraiseDirectlyNextStep) {
-                return true;
-            }
-            //收到下法後 電腦下法
-
-                Random random = new Random();
-
-                int computerRandomBet = (random.nextInt(player2Money / unit)) * unit;
-                Log.e("computer random bet",computerRandomBet+"");
-
-                if (computerRandomBet-player2Bet <= 0) {
-                    player2Bet = player1Bet;
-                    player2Money -= player2Bet;
-                    Toast.makeText(getApplicationContext(), "電腦跟", Toast.LENGTH_SHORT).show();
-                    return true;
-                }else {
-                    //反raise , 先扣掉player1下的
-                    player2Money-=player1Bet;
-                    //再扣掉自己反raise的
-                    player2Bet = computerRandomBet-player1Bet;
-                    player2Money -= player2Bet;
-                }
-                reraiseDirectlyNextStep = true;
-                Toast.makeText(getApplicationContext(), "電腦re-raise " + player2Bet + "$", Toast.LENGTH_SHORT).show();
-                return false;
-            } else {
-                Log.e("player1Bet", player1Bet + "");
-                Log.e("player2Bet", player2Bet + "");
-                Toast.makeText(getApplicationContext(), "價位不對", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-
-    }
 
     private boolean betMovementEnhancement() {
         player1Bet = moneyBar.getProgress() * unit;
 
-        Log.e("player1Bet",player1Bet+"");
-        Log.e("player1TotalInPool",player1TotalInPool+"");
-        Log.e("tableBet",tableBet+"");
+        Log.e("player1Bet", player1Bet + "");
+        Log.e("player1TotalInPool", player1TotalInPool + "");
+        Log.e("tableBet", tableBet + "");
 
-        if(player1Bet+player1TotalInPool>=tableBet) {
+        if (player1Bet + player1TotalInPool >= tableBet) {
             //取得我的下注
 
 
             //扣掉玩家的現金
             player1Money -= player1Bet;
             //設置目前桌上Bet
-            tableBet = player1TotalInPool+player1Bet;
+            tableBet = player1TotalInPool + player1Bet;
 
-            player1TotalInPool+=player1Bet;
+            player1TotalInPool += player1Bet;
 
 
             Log.i("currentTableBet", tableBet + "");
             refreshMoneyBar();
             //電腦判斷跟還是reraise
             Random random = new Random();
-            if (player1Bet == 0 ||  player2TotalInPool!=player1TotalInPool) {
-                if(player2Money==0 || player1Money==0) {
-                    int computerRandomBet = (random.nextInt(player2Money / unit)) * unit;
+            if (player1Bet == 0 || player2TotalInPool != player1TotalInPool) {
+                if (player2Money != 0 || player1Money != 0) {
+
+                    int computerRandomBet = (random.nextInt((player2Money + unit) / unit)) * unit;
+                    Log.i("電腦開始隨機", "電腦開始隨機:" + computerRandomBet + " player2Money " + player2Money);
                     if (computerRandomBet <= tableBet) {
                         //跟
 
@@ -835,19 +815,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.e("跟上後電腦池中", player2TotalInPool + "");
                         return true;
                     } else {
+                        //電腦re-raise
 
                         tableBet = computerRandomBet;
                         player2TotalInPool += tableBet;
                         player2Money -= tableBet;
+
+                        //玩家必須跟上
+                        moneyBar.setProgress((tableBet - player1TotalInPool) / unit);
+                        moneyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                if (progress == 0) {
+                                    btnCall.setText("Check");
+                                } else if (((tableBet - player1TotalInPool) / unit) < progress) {
+                                    btnCall.setText("re-raise : " + progress * unit);
+
+                                } else {
+                                    btnCall.setText("跟注 : " + progress * unit);
+                                }
+                                //set minimum
+                                if (((tableBet - player1TotalInPool) / unit) >= progress) {
+                                    moneyBar.setProgress((tableBet - player1TotalInPool) / unit);
+                                } else {
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {
+
+                            }
+
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {
+
+                            }
+                        });
                         Log.e("隨機後電腦池中", player2TotalInPool + "");
                         return false;
                     }
-                }else{
-                    Log.e("沒錢啦","別那邊反raise");
+                } else {
+
                     //沒錢啦!  別那邊反raise了
                     return true;
                 }
-            }else{
+            } else {
                 //玩家跟上
                 return true;
             }
@@ -859,17 +873,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //扣掉玩家的現金
             player1Money -= player1Bet;
 
-            player1TotalInPool+=player1Bet;
+            player1TotalInPool += player1Bet;
 
             refreshMoneyBar();
-           return true;
+            return true;
 
-        }else{
-            Toast.makeText(getApplicationContext(),"數目異常",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "數目異常", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
-    private void refreshMoneyBar(){
+
+    private void refreshMoneyBar() {
         moneyBar.setMax((player1Money) / unit);
     }
 }
