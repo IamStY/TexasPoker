@@ -244,4 +244,15 @@
         android:layout_toStartOf="@+id/txt_remaining_cash1"
         android:id="@+id/textView4"/>
 
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_computer_display"
+        android:visibility="invisible"
+        android:textColor="@color/white"
+        android:layout_marginRight="20dp"
+        android:layout_above="@+id/player1_1"
+        android:layout_toStartOf="@+id/player1_1"/>
+
 </RelativeLayout>

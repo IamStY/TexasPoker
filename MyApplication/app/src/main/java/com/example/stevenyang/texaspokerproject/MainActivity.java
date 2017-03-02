@@ -2,6 +2,7 @@ package com.example.stevenyang.texaspokerproject;
 
 import android.animation.Animator;
 import android.graphics.Point;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView player1_1, player2_1, player1_2, player2_2, deck1, deck2, deck3, deck4, deck5;
     Random ran = new Random();
     Button btnCall, btnRaise, btnLook, refresh, draw;
-    TextView txt_player_1_win, txt_player_2_win, remainingCash1, remainingCash2,txt_draw;
+    TextView txt_player_1_win, txt_player_2_win, remainingCash1, remainingCash2,txt_draw , txt_computer_display;
     SeekBar moneyBar;
     int player1Money = 3000;
     int player2Money = 3000;
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnCall = (Button) this.findViewById(R.id.btnCall);
         rlay_draw = (RelativeLayout)this.findViewById(R.id.rlay_draw);
         txt_draw = (TextView)this.findViewById(R.id.txt_draw);
-
+        txt_computer_display = (TextView)this.findViewById(R.id.txt_computer_display);
         btnLook = (Button) this.findViewById(R.id.btnLook);
         refresh = (Button) this.findViewById(R.id.refresh);
         moneyBar = (SeekBar) this.findViewById(R.id.moneyBar);
@@ -420,6 +422,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void showCard(ImageView view, Cards card) {
         int color = card.getColor();
         int number = card.getNumber();
+
         if (color == 0) {
             switch (number) {
                 case 1:
@@ -616,7 +619,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         initBet();
                         step++;
                         showCardTotalFunction(step);
-                        player1PushChipToTable();
+
 
                     }
                     setRemaingCash();
@@ -628,7 +631,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         initBet();
                         step++;
                         showCardTotalFunction(step);
-                        player1PushChipToTable();
+
                     }
                     setRemaingCash();
 
@@ -639,7 +642,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         initBet();
                         step++;
                         showCardTotalFunction(step);
-                        player1PushChipToTable();
+
                     }
                     setRemaingCash();
 
@@ -650,7 +653,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         initBet();
                         step++;
                         showCardTotalFunction(step);
-                        player1PushChipToTable();
+
                         FinalResults finalResults = CheckCardFuncUtil.compair(player1, player2);
                         Log.e("finalResults", finalResults.getResultString());
 //                            Toast.makeText(getApplicationContext(), finalResults.getResultString(), Toast.LENGTH_LONG).show();
@@ -737,6 +740,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         player1TotalInPool = 0;
         player2Bet = 0;
         player2TotalInPool = 0;
+        txt_computer_display.setVisibility(View.INVISIBLE);
         moneyBar.setProgress(0);
         moneyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -818,9 +822,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageView.setAnimation(animation);
         animation.start();
     }
+
     private boolean betMovementEnhancement() {
         player1Bet = moneyBar.getProgress() * unit;
-
+        if (player1Bet != 0) {
+            player1PushChipToTable();
+        }
         Log.e("player1Bet", player1Bet + "");
         Log.e("player1TotalInPool", player1TotalInPool + "");
         Log.e("tableBet", tableBet + "");
@@ -855,6 +862,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.e("跟上後電腦池中", player2Bet + "");
                         Log.e("跟上後電腦池中", player2TotalInPool + "");
                         Log.e("跟上後電腦池中", player2TotalInPool + "");
+
+
+                        txt_computer_display.setText("電腦Call");
+                        txt_computer_display.setVisibility(View.VISIBLE);
+                        new CountDownTimer(3000,3000){
+
+                            @Override
+                            public void onTick(long l) {
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                txt_computer_display.setVisibility(View.INVISIBLE);
+
+                            }
+                        }.start();
                         player2PushChipToTable();
                         return true;
                     } else {
@@ -880,8 +904,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 //set minimum
                                 if (((tableBet - player1TotalInPool) / unit) >= progress) {
                                     moneyBar.setProgress((tableBet - player1TotalInPool) / unit);
-                                } else {
-
                                 }
 
                             }
@@ -896,6 +918,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             }
                         });
+                        txt_computer_display.setText("電腦re-raise "+(tableBet - player1TotalInPool));
+                        txt_computer_display.setVisibility(View.VISIBLE);
+                        new CountDownTimer(3000,3000){
+
+                            @Override
+                            public void onTick(long l) {
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                txt_computer_display.setVisibility(View.INVISIBLE);
+
+                            }
+                        }.start();
                         Log.e("隨機後電腦池中", player2TotalInPool + "");
                         player2PushChipToTable();
                         return false;
