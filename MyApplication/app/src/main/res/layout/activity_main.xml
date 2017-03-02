@@ -108,9 +108,17 @@
         android:text="Look"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/btnFold"
+        android:id="@+id/btnLook"/>
+    <Button
+        android:text="fold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/btnLook"/>
+        android:id="@+id/btnFold"/>
 
     <Button
         android:text="refresh"
@@ -204,10 +212,8 @@
         android:id="@+id/moneyBar"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginBottom="26dp"
-        android:layout_above="@+id/btnRaise"
         android:layout_alignParentStart="true"
-  />
+        android:layout_above="@+id/btnLook"/>
 
     <TextView
         android:text="0"

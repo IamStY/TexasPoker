@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
@@ -32,16 +34,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RelativeLayout baserlay, rlay_player_2_win, rlay_player_1_win ,rlay_draw;
     ImageView player1_1, player2_1, player1_2, player2_2, deck1, deck2, deck3, deck4, deck5;
     Random ran = new Random();
-    Button btnCall, btnRaise, btnLook, refresh, draw;
+    Button btnCall, btnRaise, btnLook, refresh, draw , btnFold;
     TextView txt_player_1_win, txt_player_2_win, remainingCash1, remainingCash2,txt_draw , txt_computer_display;
     SeekBar moneyBar;
-    int player1Money = 3000;
-    int player2Money = 3000;
+    int player1Money = 0;
+    int player2Money = 0;
     int unit = 100;
     int player1Bet = 0;
     int player1TotalInPool;
     int player2Bet = 0;
     int player2TotalInPool;
+    boolean humiliating;
     int tableBet = 0;
     boolean reraiseDirectlyNextStep = false;
 
@@ -58,6 +61,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferencesUtils.setContext(this);
+        if((boolean)SharedPreferencesUtils.getParam("isfirstTime",true)==true){
+            SharedPreferencesUtils.setParam("player1Money",3000);
+            player1Money = 3000;
+            SharedPreferencesUtils.setParam("player2Money",3000);
+            player2Money = 3000;
+            SharedPreferencesUtils.setParam("isfirstTime",false);
+        }else{
+            player1Money = (int)SharedPreferencesUtils.getParam("player1Money",0);
+            player2Money = (int)SharedPreferencesUtils.getParam("player2Money",0);
+
+        }
+
         player1.clear();
         player2.clear();
         deck.clear();
@@ -67,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         deck = giveCardsToPlayer(5);
 
         initView();
-
+        if(player1Money==0){
+            startHumiliation();
+        }
 //        for (int i = 0; i < player1.size(); i++) {
 //            Log.i("player 1 cards", "color:" + player1.get(i).getColor() + " num:" + player1.get(i).getNumber());
 //        }
@@ -83,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initView() {
+        btnFold = (Button)this.findViewById(R.id.btnFold);
         remainingCash1 = (TextView) this.findViewById(R.id.txt_remaining_cash1);
         remainingCash2 = (TextView) this.findViewById(R.id.txt_remaining_cash2);
         remainingCash1.setText(player1Money + "");
@@ -95,14 +114,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         refresh = (Button) this.findViewById(R.id.refresh);
         moneyBar = (SeekBar) this.findViewById(R.id.moneyBar);
         moneyBar.setProgress(0);
-        moneyBar.setMax(player1Money / unit);
+        if(player1Money>=player2Money) {
+            moneyBar.setMax(player2Money / unit);
+        }else{
+            moneyBar.setMax(player1Money / unit);
+        }
         moneyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 btnCall.setText("下注 : " + progress * unit);
-//set minimum
-//                moneyBar.setProgress(15);
-            }
+                //set minimum
+                //                moneyBar.setProgress(15);
+        }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -159,14 +182,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void drawCards() {
         startAnim();
     }
+    private void startHumiliation(){
+        final String [] humiliateString = {"嫩","喜憨兒","電腦也會輸","刪遊戲吧孩子","先去醫院看腦子啦","二貨","我四女森 我四女森 嘻嘻嘻嘻嘻","看天線寶寶長大?","母豬母豬夜裡哭哭","幫QQQQQQQQQQQQQQQQQQQ","878787878787878787"};
+        humiliating = true;
+        refresh.setVisibility(View.INVISIBLE);
+        txt_draw.setVisibility(View.INVISIBLE);
+        new CountDownTimer(300000,200){
+
+            @Override
+            public void onTick(long l) {
+                Random randomarr = new Random();
+                int p=randomarr.nextInt(humiliateString.length);
+                TextView tv = new TextView(MainActivity.this);
+                tv.setTextColor(MainActivity.this.getResources().getColor(R.color.white));
+                tv.setText(humiliateString[p]);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                Random random = new Random();
+                int i=random.nextInt(2000);
+                int j=random.nextInt(2000);
+                int k=random.nextInt(2000);
+                int t=random.nextInt(2000);
+                lp.setMargins(i,j,k,t);
+
+
+                baserlay.addView(tv,lp);
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
+    }
 
     private void startAnim() {
         player1.addAll(deck);
         player2.addAll(deck);
 
-        Log.i("screenHeight", height + "");
-        Log.i("screenWidth", width + "");
-        Log.i("view bottom top diff", (deck1.getBottom() - deck1.getTop() + ""));
+        //大盲
+        player1Money = player1Money-200;
+        player2Money = player2Money-200;
+        remainingCash1.setText(player1Money + "");
+        remainingCash2.setText(player2Money + "");
+        player1PushChipToTable();
+        player2PushChipToTable();
+
 //        Log.i("he",(deck1.getBottom()-deck1.getTop()+""));
         final int firstLeft = -width * 2 / 3 + (deck1.getRight() - deck1.getLeft());
         final int heightPosition = height / 2 - (deck1.getBottom() - deck1.getTop()) - 120;
@@ -350,6 +412,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onAnimationEnd(Animator animator) {
+                btnFold.setOnClickListener(MainActivity.this);
                 btnCall.setOnClickListener(MainActivity.this);
                 btnLook.setOnTouchListener(new View.OnTouchListener() {
                     @Override
@@ -665,15 +728,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (finalResults.getFlag() == 1) {
                             rlay_player_1_win.setVisibility(View.VISIBLE);
                             txt_player_1_win.setText(strb.toString());
+                            SharedPreferencesUtils.setParam("player1Money",6000-player2Money);
+                            SharedPreferencesUtils.setParam("player2Money",player2Money);
                         } else if(finalResults.getFlag() == 2) {
                             rlay_player_2_win.setVisibility(View.VISIBLE);
                             txt_player_2_win.setText(strb.toString());
+                            SharedPreferencesUtils.setParam("player1Money",player1Money);
+                            SharedPreferencesUtils.setParam("player2Money",6000-player1Money);
                         }else{
                             rlay_draw.setVisibility(View.VISIBLE);
                             txt_draw.setText(strb.toString());
+                            SharedPreferencesUtils.setParam("player1Money",player1Money+(6000-player1Money-player2Money)/2);
+                            SharedPreferencesUtils.setParam("player2Money",player2Money+(6000-player1Money-player2Money)/2);
                         }
                     }
                     setRemaingCash();
+                    if((int)SharedPreferencesUtils.getParam("player1Money",0)==0){
+                        startHumiliation();
+                    }
 
                     break;
             }
@@ -720,12 +792,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                showCard(player2_2, player2.get(1));
 
 
+        }else if(v==btnFold){
+            SharedPreferencesUtils.setParam("player1Money",player1Money);
+            SharedPreferencesUtils.setParam("player2Money",6000-player1Money);
+            recreate();
+
         }
-//        else if(v==btnLook){
-//
-//
-//
-//        }
+
     }
 
     private void setRemaingCash() {
@@ -851,7 +924,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (player1Bet == 0 || player2TotalInPool != player1TotalInPool) {
                 if (player2Money != 0 || player1Money != 0) {
 
-                    int computerRandomBet = (random.nextInt((player2Money + unit) / unit)) * unit;
+                    int computerRandomBet;
+                    if (player1Money >= player2Money) {
+                        computerRandomBet = (random.nextInt((player2Money + unit) / unit)) * unit;
+                    } else {
+                        computerRandomBet = (random.nextInt((player1Money + unit) / unit)) * unit;
+                    }
+
                     Log.i("電腦開始隨機", "電腦開始隨機:" + computerRandomBet + " player2Money " + player2Money);
                     if (computerRandomBet <= tableBet) {
                         //跟
@@ -866,7 +945,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         txt_computer_display.setText("電腦Call");
                         txt_computer_display.setVisibility(View.VISIBLE);
-                        new CountDownTimer(3000,3000){
+                        new CountDownTimer(3000, 3000) {
 
                             @Override
                             public void onTick(long l) {
@@ -879,7 +958,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             }
                         }.start();
-                        player2PushChipToTable();
+                        if (player2Bet != 0) {
+                            player2PushChipToTable();
+                        }
                         return true;
                     } else {
                         //電腦re-raise
@@ -918,9 +999,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             }
                         });
-                        txt_computer_display.setText("電腦re-raise "+(tableBet - player1TotalInPool));
+                        txt_computer_display.setText("電腦re-raise " + (tableBet - player1TotalInPool));
                         txt_computer_display.setVisibility(View.VISIBLE);
-                        new CountDownTimer(3000,3000){
+                        new CountDownTimer(3000, 3000) {
 
                             @Override
                             public void onTick(long l) {
@@ -966,7 +1047,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void refreshMoneyBar() {
-        moneyBar.setMax((player1Money) / unit);
+        if(player1Money>=player2Money) {
+            moneyBar.setMax(player2Money / unit);
+        }else{
+            moneyBar.setMax(player1Money / unit);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(humiliating){
+            Toast.makeText(getApplicationContext(),"安安 , 想跑??????????????????????????",Toast.LENGTH_LONG).show();
+        }else {
+            super.onBackPressed();
+        }
     }
 }
 
