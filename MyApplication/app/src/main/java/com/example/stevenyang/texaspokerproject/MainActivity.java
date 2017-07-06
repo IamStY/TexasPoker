@@ -62,17 +62,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SharedPreferencesUtils.setContext(this);
-        if((boolean)SharedPreferencesUtils.getParam("isfirstTime",true)==true){
-            SharedPreferencesUtils.setParam("player1Money",3000);
+//        if((boolean)SharedPreferencesUtils.getParam("isfirstTime",true)==true){
+//            SharedPreferencesUtils.setParam("player1Money",3000);
             player1Money = 3000;
-            SharedPreferencesUtils.setParam("player2Money",3000);
+//            SharedPreferencesUtils.setParam("player2Money",3000);
             player2Money = 3000;
-            SharedPreferencesUtils.setParam("isfirstTime",false);
-        }else{
-            player1Money = (int)SharedPreferencesUtils.getParam("player1Money",0);
-            player2Money = (int)SharedPreferencesUtils.getParam("player2Money",0);
-
-        }
+//            SharedPreferencesUtils.setParam("isfirstTime",false);
+//        }else{
+//            player1Money = (int)SharedPreferencesUtils.getParam("player1Money",0);
+//            player2Money = (int)SharedPreferencesUtils.getParam("player2Money",0);
+//
+//        }
 
         player1.clear();
         player2.clear();
@@ -728,24 +728,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (finalResults.getFlag() == 1) {
                             rlay_player_1_win.setVisibility(View.VISIBLE);
                             txt_player_1_win.setText(strb.toString());
-                            SharedPreferencesUtils.setParam("player1Money",6000-player2Money);
-                            SharedPreferencesUtils.setParam("player2Money",player2Money);
+//                            SharedPreferencesUtils.setParam("player1Money",6000-player2Money);
+//                            SharedPreferencesUtils.setParam("player2Money",player2Money);
                         } else if(finalResults.getFlag() == 2) {
                             rlay_player_2_win.setVisibility(View.VISIBLE);
                             txt_player_2_win.setText(strb.toString());
-                            SharedPreferencesUtils.setParam("player1Money",player1Money);
-                            SharedPreferencesUtils.setParam("player2Money",6000-player1Money);
+                            startHumiliation();
+//                            SharedPreferencesUtils.setParam("player1Money",player1Money);
+//                            SharedPreferencesUtils.setParam("player2Money",6000-player1Money);
                         }else{
                             rlay_draw.setVisibility(View.VISIBLE);
                             txt_draw.setText(strb.toString());
-                            SharedPreferencesUtils.setParam("player1Money",player1Money+(6000-player1Money-player2Money)/2);
-                            SharedPreferencesUtils.setParam("player2Money",player2Money+(6000-player1Money-player2Money)/2);
+//                            SharedPreferencesUtils.setParam("player1Money",player1Money+(6000-player1Money-player2Money)/2);
+//                            SharedPreferencesUtils.setParam("player2Money",player2Money+(6000-player1Money-player2Money)/2);
                         }
                     }
                     setRemaingCash();
-                    if((int)SharedPreferencesUtils.getParam("player1Money",0)==0){
-                        startHumiliation();
-                    }
+//                    if((int)SharedPreferencesUtils.getParam("player1Money",0)==0){
+//                        startHumiliation();
+//                    }
 
                     break;
             }
@@ -793,8 +794,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         }else if(v==btnFold){
-            SharedPreferencesUtils.setParam("player1Money",player1Money);
-            SharedPreferencesUtils.setParam("player2Money",6000-player1Money);
+//            SharedPreferencesUtils.setParam("player1Money",player1Money);
+//            SharedPreferencesUtils.setParam("player2Money",6000-player1Money);
             recreate();
 
         }
